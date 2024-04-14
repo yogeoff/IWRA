@@ -1,0 +1,26 @@
+﻿<h3>@Title</h3>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Page Heading";
+}
+
+<style>
+    h3 {
+        color: #45454A;
+        font-family: Inter;
+        font-size: 2rem;
+        font-style: normal;
+        font-weight: 500;
+        margin: 40px 0;
+    }
+
+    h3:after {
+        content: "";
+        display: block;
+        width: 8rem;
+        height: 16px;
+        background-color: #45454A;
+        margin-top: 8px;
+    }
+</style>
