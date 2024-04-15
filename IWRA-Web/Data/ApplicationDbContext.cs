@@ -6,4 +6,6 @@ namespace IWRA_Web.Data
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
     }
+
+
 }
