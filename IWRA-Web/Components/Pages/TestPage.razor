@@ -1,0 +1,200 @@
+﻿@page "/TestPage"
+@using IWRA_Web.Models
+@using IWRA_Web.Data
+@using IWRA_Web.Components.Partials.Page
+
+@inject AppDbContext dbContext
+
+<PageHeading Title="Test Page" />
+
+<p>This page is intended as a test page for the model and database creation. If everything went well, it should show the data inserted into the database for various tables.</p>
+
+<table>
+    <tr>
+        <th>Table Name</th>
+        <th>Expected number of rows</th>
+        <th>Actual number of rows</th>
+    </tr>
+    <tr>
+        <td>Assignee</td>
+        <td>10</td>
+        <td>@dbContext.Assignee.Count()</td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Created At</th>
+        <th>Name</th>
+        <th>Email</th>
+    </tr>
+    @foreach (Assignee a in dbContext.Assignee)
+    {
+        <tr>
+            <td>@a.Id</td>
+            <td>@a.CreatedAt</td>
+            <td>@a.Name</td>
+            <td>@a.Email</td>
+        </tr>
+    }
+</table>
+
+<hr />
+
+<table>
+    <tr>
+        <th>Table Name</th>
+        <th>Expected number of rows</th>
+        <th>Actual number of rows</th>
+    </tr>
+    <tr>
+        <td>Department</td>
+        <td>10</td>
+        <td>@dbContext.Department.Count()</td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Created At</th>
+        <th>Name</th>
+    </tr>
+    @foreach (Department d in dbContext.Department)
+    {
+        <tr>
+            <td>@d.Id</td>
+            <td>@d.CreatedAt</td>
+            <td>@d.Name</td>
+        </tr>
+    }
+</table>
+
+<hr />
+
+<table>
+    <tr>
+        <th>Table Name</th>
+        <th>Expected number of rows</th>
+        <th>Actual number of rows</th>
+    </tr>
+    <tr>
+        <td>Note</td>
+        <td>386</td>
+        <td>@dbContext.Note.Count()</td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Created At</th>
+        <th>Request Id</th>
+        <th>Assignee Id</th>
+        <th>Content</th>
+    </tr>
+    @foreach (Note n in dbContext.Note)
+    {
+        <tr>
+            <td>@n.Id</td>
+            <td>@n.CreatedAt</td>
+            <td>@n.RequestId</td>
+            <td>@n.AssigneeId</td>
+            <td>@n.Content</td>
+        </tr>
+    }
+</table>
+
+<hr />
+
+<table>
+    <tr>
+        <th>Table Name</th>
+        <th>Expected number of rows</th>
+        <th>Actual number of rows</th>
+    </tr>
+    <tr>
+        <td>Request</td>
+        <td>1000</td>
+        <td>@dbContext.Request.Count()</td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Created At</th>
+        <th>Requestor Name</th>
+        <th>Requestor Email</th>
+        <th>Expected Completion Date</th>
+        <th>Work Request Number</th>
+        <th>Internal Audit Number</th>
+        <th>Content</th>
+        <th>Assignee Id</th>
+        <th>Department Id</th>
+        <th>Status Id</th>
+    </tr>
+    @foreach (Request r in dbContext.Request)
+    {
+        <tr>
+            <td>@r.Id</td>
+            <td>@r.CreatedAt</td>
+            <td>@r.RequestorName</td>
+            <td>@r.RequestorEmail</td>
+            <td>@r.ExpectedCompletionDate</td>
+            <td>@r.WorkRequestNumber</td>
+            <td>@r.InternalAuditNumber</td>
+            <td>@r.Content</td>
+            <td>@r.AssigneeId</td>
+            <td>@r.DepartmentId</td>
+            <td>@r.StatusId</td>
+        </tr>
+    }
+</table>
+
+<hr />
+
+<table>
+    <tr>
+        <th>Table Name</th>
+        <th>Expected number of rows</th>
+        <th>Actual number of rows</th>
+    </tr>
+    <tr>
+        <td>Status</td>
+        <td>6</td>
+        <td>@dbContext.Status.Count()</td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+    <th>Id</th>
+    <th>Created At</th>
+    <th>Name</th>
+    </tr>
+    @foreach (Status s in dbContext.Status)
+    {
+        <tr>
+            <td>@s.Id</td>
+            <td>@s.CreatedAt</td>
+            <td>@s.Name</td>
+        </tr>
+    }
+</table>
+
+@code {
+}
+
+<style>
+    table {
+        border: 1px solid black;
+        margin: 2rem;
+    }
+
+    td, th {
+        border: 1px solid black;
+        padding: 0.5rem;
+    }
+</style>
