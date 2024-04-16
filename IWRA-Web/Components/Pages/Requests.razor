@@ -7,7 +7,38 @@
 
 <PageHeading Title="Requests" />
 
-<p>Requests page</p>
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Requestor</th>
+        <th>Department Id</th>
+        <th>Status Id</th>
+        <th>Assignee Id</th>
+    </tr>
 
-@code { 
+    @foreach (Request r in dbContext.Request)
+    {
+        <tr>
+            <td>@r.CreatedAt.ToString("dd MMMM yyyy")</td>
+            <td>@r.RequestorName</td>
+            <td>@dbContext.Department.Find(r.DepartmentId).Name</td>
+            <td>@dbContext.Status.Find(r.StatusId).Name</td>
+            <td>@dbContext.Assignee.Find(r.AssigneeId).Name</td>
+        </tr>
+    }
+</table>
+
+@code {
 }
+
+<style>
+    table {
+        border: 1px solid black;
+        margin: 2rem;
+    }
+
+    td, th {
+        border: 1px solid black;
+        padding: 0.5rem;
+    }
+</style>
