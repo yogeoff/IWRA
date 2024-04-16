@@ -28,6 +28,8 @@ public class Request
     [ForeignKey("Assignee")]
     public int AssigneeId { get; set; }
 
+    public Assignee Assignee { get; set; }
+
     [ForeignKey("Department")]
     public int DepartmentId { get; set; }
 
