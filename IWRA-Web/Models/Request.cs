@@ -33,4 +33,6 @@ public class Request
 
     [ForeignKey("Status")]
     public int StatusId { get; set; }
+
+    public bool IsPriority { get; set; }
 }

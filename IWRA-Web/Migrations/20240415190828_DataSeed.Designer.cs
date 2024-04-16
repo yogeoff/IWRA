@@ -145,6 +145,8 @@ namespace IWRAWeb.Migrations
                     b.Property<string>("WorkRequestNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("IsPriority")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

@@ -134,6 +134,7 @@
         <th>Assignee Id</th>
         <th>Department Id</th>
         <th>Status Id</th>
+        <th>Is Priority</th>
     </tr>
     @foreach (Request r in dbContext.Request)
     {
@@ -149,6 +150,7 @@
             <td>@r.AssigneeId</td>
             <td>@r.DepartmentId</td>
             <td>@r.StatusId</td>
+            <td>@r.IsPriority</td>
         </tr>
     }
 </table>
