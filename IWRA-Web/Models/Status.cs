@@ -11,5 +11,5 @@ public class Status
     public DateTime CreatedAt { get; set; }
 
     [Required]
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
 }
