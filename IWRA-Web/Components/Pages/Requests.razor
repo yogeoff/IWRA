@@ -79,15 +79,19 @@
         <th>Assignee</th>
     </tr>
 
-    @foreach (Request r in dbContext.Request)
+    @foreach (Request r in dbContext.Request.OrderByDescending(r => r.CreatedAt))
     {
-        <tr>
-            <td>@r.CreatedAt.ToString("dd MMMM yyyy")</td>
-            <td>@r.RequestorName</td>
-            <td>@dbContext.Department.Find(r.DepartmentId).Name</td>
-            <td>@dbContext.Status.Find(r.StatusId).Name</td>
-            <td>@dbContext.Assignee.Find(r.AssigneeId).Name</td>
-        </tr>
+        @if ((r.StatusId != dbContext.Status.Where(s => s.Name == "Completed").FirstOrDefault()?.Id) && (r.StatusId != dbContext.Status.Where(s => s.Name == "Cancelled").FirstOrDefault()?.Id))
+        {
+            <tr>
+                <td>@r.CreatedAt.ToString("dd MMMM yyyy")</td>
+                <td>@r.WorkRequestNumber</td>
+                <td>@r.RequestorName</td>
+                <td>@dbContext.Department.Find(r.DepartmentId)?.Name</td>
+                <td>@dbContext.Status.Find(r.StatusId)?.Name</td>
+                <td>@dbContext.Assignee.Find(r.AssigneeId)?.Name</td>
+            </tr>
+        }
     }
 </table>
 
