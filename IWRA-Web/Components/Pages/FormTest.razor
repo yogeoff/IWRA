@@ -1,0 +1,35 @@
+﻿@page "/FormTest"
+
+@using IWRA_Web.Models
+@using IWRA_Web.Data
+@using IWRA_Web.Components.Partials.Page
+
+@inject AppDbContext dbContext
+
+<EditForm Model="@request" FormName="NewRequestForm" OnSubmit="HandleValidSubmit">
+
+    <div>
+        <label for="RequestorName">Requestor Name</label>
+        <InputText id="RequestorName" @bind-Value="request.RequestorName" />
+    </div>
+
+    <div>
+        <label for="RequestorEmail">Requestor Email</label>
+        <InputText id="RequestorEmail" @bind-Value="request.RequestorEmail" type="email" />
+    </div>
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm(FormName = "NewRequestForm")]
+    public Request? request { get; set; } = new Request();
+
+    public void HandleValidSubmit()
+    {
+        System.Diagnostics.Debug.WriteLine("Requestor Name:" + request.RequestorName);
+        System.Diagnostics.Debug.WriteLine("Requestor Email:" + request.RequestorEmail);
+//        dbContext.Request.Add(request);
+//        dbContext.SaveChanges();
+    }
+}

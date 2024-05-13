@@ -10,6 +10,7 @@
 <table>
     <tr>
         <th>Date</th>
+        <th>Work Request Number</th>
         <th>Requestor</th>
         <th>Department Id</th>
         <th>Status Id</th>
@@ -20,6 +21,7 @@
     {
         <tr>
             <td>@r.CreatedAt.ToString("dd MMMM yyyy")</td>
+            <td>@r.WorkRequestNumber</td>
             <td>@r.RequestorName</td>
             <td>@dbContext.Department.Find(r.DepartmentId).Name</td>
             <td>@dbContext.Status.Find(r.StatusId).Name</td>

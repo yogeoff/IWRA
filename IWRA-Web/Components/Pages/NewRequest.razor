@@ -1,11 +1,127 @@
 ﻿@page "/NewRequest"
 
+@using IWRA_Web.Models
+@using IWRA_Web.Data
 @using IWRA_Web.Components.Partials.Page
+@using IWRA_Web.Components.Partials.Form
+
+@inject AppDbContext dbContext
 
 <PageHeading Title="New Request" />
 
-<p>New Request form</p>
+<div class="container">
+    <EditForm Model="@newRequest" FormName="SubmitNewRequestForm" OnSubmit="SubmitNewRequestForm">
+        <div class="row my-4">
+            <div class="form-group col">
+                <label for="RequestDate">Request Date</label>
+                <small class="d-block form-text text-muted">Requests are automatically submitted with the current date</small>
+                <InputDate Type="InputDateType.Date" class="form-control" id="RequestDate" @bind-Value="@CurrentDate" readonly />
+            </div>
+
+            <div class="form-group col">
+                <label for="Department">Department</label>
+                <small class="d-block form-text text-muted">Please select a Department</small>
+                <InputSelect class="form-select" @bind-Value="newRequest.DepartmentId">
+                    @foreach (Department d in dbContext.Department)
+                    {
+                        <option value="@d.Id">@d.Name</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+
+        <div class="row my-4">
+            <div class="form-group col">
+                <label for="RequestorName">Requestor Name</label>
+                <small class="d-block form-text text-muted">Please enter your name</small>
+                <InputText id="RequestorName" class="form-control" @bind-Value="newRequest.RequestorName" />
+            </div>
+
+            <div class="form-group col">
+                <label for="RequestorEmail">Requestor Email</label>
+                <small class="d-block form-text text-muted">Please enter your email address</small>
+                <InputText id="RequestorEmail" class="form-control" @bind-Value="newRequest.RequestorEmail" type="email" />
+            </div>
+        </div>
+
+        <div class="row my-4">
+            <div class="form-group col">
+                <label for="WorkRequestNumber">Work Request Number</label>
+                <small class="d-block form-text text-muted">Please enter a Work Request Number</small>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">WR</span>
+                    </div>
+                    <InputText id="WorkRequestNumber" class="form-control" @bind-Value="newRequest.WorkRequestNumber" />
+                </div>
+            </div>
+            <div class="form-group col">
+                <label for="InternalAuditNumber">Internal Audit Number</label>
+                <small class="d-block form-text text-muted">Optional Internal Audit number</small>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">IA</span>
+                    </div>
+                    <InputText id="InternalAuditNumber" class="form-control" @bind-Value="newRequest.InternalAuditNumber" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row my-4">
+            <div class="form-group col">
+                <label for="RequestDetails">Request Details</label>
+                <small class="d-block form-text text-muted">Please include a detailed description</small>
+                <InputTextArea class="form-control" id="RequestDetails" @bind-Value="newRequest.Content" rows="10"></InputTextArea>
+            </div>
+        </div>
+        <div class="row my-4">
+            <div class="form-check col">
+                <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="newRequest.IsPriority" id="IsPriority" />
+                <label class="form-check-label" for="IsPriority">This is a priority request</label>
+            </div>
+            <div class="col"></div>
+        </div>
+
+        <div class="row my-4">
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-outline-secondary">Cancel</button>
+            </div>
+        </div>
+    </EditForm>
+</div>
 
 @code {
 
+    
+
+    private DateTime CurrentDate = DateTime.Today;
+    private DateTime ExpectedDate = DateTime.Today.AddDays(7);
+
+    private DateTime SetExpectedDate(DateTime date)
+    {
+        return ExpectedDate = date;
+    }
+
+    [SupplyParameterFromForm(FormName = "SubmitNewRequestForm")]
+    public Request? newRequest { get; set; } = new Request();
+
+    public void SubmitNewRequestForm()
+    {
+        System.Diagnostics.Debug.WriteLine("Request Date:\t" + newRequest.CreatedAt);
+        System.Diagnostics.Debug.WriteLine("Department:\t" + newRequest.DepartmentId);
+        System.Diagnostics.Debug.WriteLine("Requestor Name:\t" + newRequest.RequestorName);
+        System.Diagnostics.Debug.WriteLine("Requestor Email:\t" + newRequest.RequestorEmail);
+        System.Diagnostics.Debug.WriteLine("Work Request Number:\t" + newRequest.WorkRequestNumber);
+        System.Diagnostics.Debug.WriteLine("Internal Audit Number:\t" + newRequest.InternalAuditNumber);
+        System.Diagnostics.Debug.WriteLine("Request Details:\t" + newRequest.Content);
+        System.Diagnostics.Debug.WriteLine("Is Priority:\t" + newRequest.IsPriority);
+        System.Diagnostics.Debug.WriteLine("Assignee:\t" + newRequest.Assignee);
+        System.Diagnostics.Debug.WriteLine("Status:\t" + newRequest.StatusId);
+
+        //        dbContext.Request.Add(newequest);
+        //        dbContext.SaveChanges();
+
+       
+    }
 }

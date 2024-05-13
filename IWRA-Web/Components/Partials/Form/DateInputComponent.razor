@@ -1,0 +1,34 @@
+﻿<div class="form-group">
+    <label for="@Input">@Label</label>
+
+    @if (Description != "")
+    {
+        <small id="@Description" class="d-block form-text text-muted">@Description</small>
+    }
+
+    @if (Editable)
+    {
+        <input type="date" class="form-control" id="@Input" aria-describedby="@Input" placeholder="@Value" value="@Value" />
+    }
+
+    else
+    {
+        <input type="date" class="form-control" id="@Input" aria-describedby="@Input" placeholder="@Value" value="@Value" readonly />
+    }
+
+
+
+</div>
+
+@code {
+    [Parameter]
+    public string Label { get; set; } = "";
+    [Parameter]
+    public string Description { get; set; } = "";
+    [Parameter]
+    public string Input { get; set; } = "";
+    [Parameter]
+    public string Value { get; set; } = "";
+    [Parameter]
+    public bool Editable { get; set; } = true;
+}
