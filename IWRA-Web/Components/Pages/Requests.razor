@@ -7,21 +7,82 @@
 
 <PageHeading Title="Requests" />
 
-<table>
+<div class="row">
+    <div class="card col">
+        <div class="card-header">
+            <p class="card-title">Assigned</p>
+        </div>
+        <div class="card-body">
+            @dbContext.Request.Where(c => c.StatusId == @dbContext.Status.Where(s => s.Name == "Assigned").FirstOrDefault()!.Id).Count()
+            
+        </div>
+    </div>
+
+    <div class="card col">
+        <div class="card-header">
+            <p class="card-title">Cancelled</p>
+        </div>
+        <div class="card-body">
+            @dbContext.Request.Where(c => c.StatusId == @dbContext.Status.Where(s => s.Name == "Cancelled").FirstOrDefault()!.Id).Count()
+
+        </div>
+    </div>
+
+    <div class="card col">
+        <div class="card-header">
+            <p class="card-title">Completed</p>
+        </div>
+        <div class="card-body">
+            @dbContext.Request.Where(c => c.StatusId == @dbContext.Status.Where(s => s.Name == "Completed").FirstOrDefault()!.Id).Count()
+
+        </div>
+    </div>
+
+    <div class="card col">
+        <div class="card-header">
+            <p class="card-title">In Process</p>
+        </div>
+        <div class="card-body">
+            @dbContext.Request.Where(c => c.StatusId == @dbContext.Status.Where(s => s.Name == "In Process").FirstOrDefault()!.Id).Count()
+
+        </div>
+    </div>
+
+    <div class="card col">
+        <div class="card-header">
+            <p class="card-title">On Hold</p>
+        </div>
+        <div class="card-body">
+            @dbContext.Request.Where(c => c.StatusId == @dbContext.Status.Where(s => s.Name == "On Hold").FirstOrDefault()!.Id).Count()
+
+        </div>
+    </div>
+
+    <div class="card col">
+        <div class="card-header">
+            <p class="card-title">Submitted</p>
+        </div>
+        <div class="card-body">
+            @dbContext.Request.Where(c => c.StatusId == @dbContext.Status.Where(s => s.Name == "Submitted").FirstOrDefault()!.Id).Count()
+
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered my-4">
     <tr>
         <th>Date</th>
         <th>Work Request Number</th>
         <th>Requestor</th>
         <th>Department Id</th>
         <th>Status Id</th>
-        <th>Assignee Id</th>
+        <th>Assignee</th>
     </tr>
 
     @foreach (Request r in dbContext.Request)
     {
         <tr>
             <td>@r.CreatedAt.ToString("dd MMMM yyyy")</td>
-            <td>@r.WorkRequestNumber</td>
             <td>@r.RequestorName</td>
             <td>@dbContext.Department.Find(r.DepartmentId).Name</td>
             <td>@dbContext.Status.Find(r.StatusId).Name</td>
@@ -31,16 +92,8 @@
 </table>
 
 @code {
+
 }
 
 <style>
-    table {
-        border: 1px solid black;
-        margin: 2rem;
-    }
-
-    td, th {
-        border: 1px solid black;
-        padding: 0.5rem;
-    }
 </style>
