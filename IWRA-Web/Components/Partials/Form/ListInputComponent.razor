@@ -1,0 +1,31 @@
+﻿@using IWRA_Web.Models
+@using IWRA_Web.Data
+
+@inject AppDbContext dbContext
+
+<div class="form-group">
+    <label for="@Input">@Label</label>
+
+    @if (Description != "")
+    {
+        <small id="@Description" class="d-block form-text text-muted">@Description</small>
+    }
+
+    <select class="form-select" id="@Input">
+        @foreach (Department d in dbContext.Department)
+        {
+            <option>@d.Name</option>
+        }
+    </select>
+</div>
+
+@code {
+    [Parameter]
+    public string Label { get; set; } = "";
+    [Parameter]
+    public string Description { get; set; } = "";
+    [Parameter]
+    public string Input { get; set; } = "";
+    [Parameter]
+    public bool Editable { get; set; } = true;
+}

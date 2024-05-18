@@ -25,7 +25,7 @@ namespace IWRAWeb.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", rowVersion: true, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", rowVersion: true, nullable: false).Annotation("SqlServer:Timestamp", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -160,7 +160,8 @@ namespace IWRAWeb.Migrations
                     {7, DateTime.Now, "Penrod Brass", "penrod.brass@xyzco.ie"},
                     {8, DateTime.Now, "Perri Pinckney", "perri.pinckney@xyzco.ie"},
                     {9, DateTime.Now, "Spense Burder", "spense.burder@xyzco.ie"},
-                    {10, DateTime.Now, "Veda Ratledge", "veda.ratledge@xyzco.ie"}
+                    {10, DateTime.Now, "Veda Ratledge", "veda.ratledge@xyzco.ie"},
+                    {11, DateTime.Now, "Unassigned", "" },
                 });
 
 
@@ -189,7 +190,7 @@ namespace IWRAWeb.Migrations
                     {3, DateTime.Now, "Completed" },
                     {4, DateTime.Now, "In Process" },
                     {5, DateTime.Now, "On Hold" },
-                    {6, DateTime.Now, "Submitted" },
+                    {6, DateTime.Now, "Submitted" }
                 });
 
             migrationBuilder.InsertData(

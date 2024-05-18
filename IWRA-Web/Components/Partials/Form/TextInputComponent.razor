@@ -1,0 +1,70 @@
+﻿<div class="form-group">
+    <label for="@Id">@Label</label>
+
+    @if (Description != "")
+    {
+        <small class="d-block form-text text-muted">@Description</small>
+    }
+
+    @if (Editable)
+    {
+        @if (Type == "multiline")
+        {
+@*             <textarea class="form-control" id="@Id" placeholder="@Label" @bind-Value="@BindingValue" rows="10" /> *@
+        }
+        else
+        {
+            <div class="input-group">
+                @if (Prepend) {
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">@PrependText</span>
+                    </div>
+                }
+                <InputText type="text" class="form-control" id="@Id" placeholder="@Label" @bind-Value="@BindingValue" />
+            </div>
+        }
+    }
+    else
+    {
+        @if (Type == "multiline")
+        {
+@*             <textarea class="form-control" id="@Id" placeholder="@Label" @bind-@bind-Value="@BindingValue" rows="10" readonly /> *@
+        }
+        else
+        {
+            <div class="input-group">
+                @if (Prepend)
+                {
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">@PrependText</span>
+                    </div>
+                }
+                <InputText type="text" class="form-control" id="@Id" placeholder="@Label" @bind-Value="@BindingValue" readonly  />
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = "";
+    [Parameter]
+    public string Label { get; set; } = "";
+    [Parameter]
+    public string Description { get; set; } = "";
+    [Parameter]
+    public bool Editable { get; set; } = true;
+    [Parameter]
+    public string Type { get; set; } = "";
+    [Parameter]
+    public bool Prepend { get; set; } = false;
+    [Parameter]
+    public string PrependText { get; set; } = "";
+
+    private string _value = "";
+
+    [Parameter]
+    public string BindingValue { get; set;} = "";
+    [Parameter]
+    public EventCallback<string> BindingValueChanged { get; set; }
+}
