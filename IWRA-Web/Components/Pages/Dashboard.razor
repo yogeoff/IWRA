@@ -1,11 +1,57 @@
 ﻿@page "/Dashboard"
 
+@using IWRA_Web.Models
+@using IWRA_Web.Data
 @using IWRA_Web.Components.Partials.Page
+
+@inject AppDbContext dbContext
 
 <PageHeading Title="Dashboard" />
 
-<p>Dashboard page</p>
+<h4>Work Requests by Assignees</h4>
+
+<table class="table table-bordered my-4">
+    <tr>
+        <th>Assignee</th>
+        <th>Assigned</th>
+        <th>Cancelled</th>
+        <th>Completed</th>
+        <th>In Process</th>
+        <th>On Hold</th>
+        <th>Submitted</th>
+        <th>Total</th>
+    </tr>
+
+    @foreach (Assignee a in dbContext.Assignee)
+    {
+        <tr>
+            <td>@a.Name</td>
+            <td>@dbContext.Request.Where(c => c.AssigneeId == a.Id && c.StatusId == dbContext.Status.Where(s => s.Name == "Assigned").FirstOrDefault()!.Id).Count()</td>
+            <td>@dbContext.Request.Where(c => c.AssigneeId == a.Id && c.StatusId == dbContext.Status.Where(s => s.Name == "Cancelled").FirstOrDefault()!.Id).Count()</td>
+            <td>@dbContext.Request.Where(c => c.AssigneeId == a.Id && c.StatusId == dbContext.Status.Where(s => s.Name == "Completed").FirstOrDefault()!.Id).Count()</td>
+            <td>@dbContext.Request.Where(c => c.AssigneeId == a.Id && c.StatusId == dbContext.Status.Where(s => s.Name == "In Process").FirstOrDefault()!.Id).Count()</td>
+            <td>@dbContext.Request.Where(c => c.AssigneeId == a.Id && c.StatusId == dbContext.Status.Where(s => s.Name == "On Hold").FirstOrDefault()!.Id).Count()</td>
+            <td>@dbContext.Request.Where(c => c.AssigneeId == a.Id && c.StatusId == dbContext.Status.Where(s => s.Name == "Submitted").FirstOrDefault()!.Id).Count()</td>
+            <td>@dbContext.Request.Where(c => c.AssigneeId == a.Id).Count()</td>
+        </tr>
+    }
+
+    <tr class="fw-bold table-info">
+        <td>Total</td>
+        <td>@dbContext.Request.Where(c => c.StatusId == dbContext.Status.Where(s => s.Name == "Assigned").FirstOrDefault()!.Id).Count()</td>
+        <td>@dbContext.Request.Where(c => c.StatusId == dbContext.Status.Where(s => s.Name == "Cancelled").FirstOrDefault()!.Id).Count()</td>
+        <td>@dbContext.Request.Where(c => c.StatusId == dbContext.Status.Where(s => s.Name == "Completed").FirstOrDefault()!.Id).Count()</td>
+        <td>@dbContext.Request.Where(c => c.StatusId == dbContext.Status.Where(s => s.Name == "In Process").FirstOrDefault()!.Id).Count()</td>
+        <td>@dbContext.Request.Where(c => c.StatusId == dbContext.Status.Where(s => s.Name == "On Hold").FirstOrDefault()!.Id).Count()</td>
+        <td>@dbContext.Request.Where(c => c.StatusId == dbContext.Status.Where(s => s.Name == "Submitted").FirstOrDefault()!.Id).Count()</td>
+        <td>@dbContext.Request.Count()</td>
+    </tr>
+
+</table>
 
 @code {
 
 }
+
+<style>
+</style>
