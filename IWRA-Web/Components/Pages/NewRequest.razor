@@ -15,7 +15,7 @@
             <div class="form-group col">
                 <label for="RequestDate">Request Date</label>
                 <small class="d-block form-text text-muted">Requests are automatically submitted with the current date</small>
-                <InputDate Type="InputDateType.Date" class="form-control" id="RequestDate" @bind-Value="@CurrentDate" readonly />
+                <InputDate Type="InputDateType.Date" class="form-control" id="RequestDate" @Value:get="@CurrentDate" @bind-Value="newRequest.CreatedAt" readonly />
             </div>
 
             <div class="form-group col">
@@ -34,13 +34,13 @@
             <div class="form-group col">
                 <label for="RequestorName">Requestor Name</label>
                 <small class="d-block form-text text-muted">Please enter your name</small>
-                <InputText id="RequestorName" class="form-control" @bind-Value="newRequest.RequestorName" />
+                <InputText id="RequestorName" class="form-control" @bind-Value="newRequest.RequestorName" required />
             </div>
 
             <div class="form-group col">
                 <label for="RequestorEmail">Requestor Email</label>
                 <small class="d-block form-text text-muted">Please enter your email address</small>
-                <InputText id="RequestorEmail" class="form-control" @bind-Value="newRequest.RequestorEmail" type="email" />
+                <InputText id="RequestorEmail" class="form-control" @bind-Value="newRequest.RequestorEmail" type="email" required />
             </div>
         </div>
 
@@ -52,7 +52,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">WR</span>
                     </div>
-                    <InputText id="WorkRequestNumber" class="form-control" @bind-Value="newRequest.WorkRequestNumber" />
+                    <InputText id="WorkRequestNumber" class="form-control" @bind-Value="newRequest.WorkRequestNumber" required />
                 </div>
             </div>
             <div class="form-group col">
@@ -71,7 +71,7 @@
             <div class="form-group col">
                 <label for="RequestDetails">Request Details</label>
                 <small class="d-block form-text text-muted">Please include a detailed description</small>
-                <InputTextArea class="form-control" id="RequestDetails" @bind-Value="newRequest.Content" rows="10"></InputTextArea>
+                <InputTextArea class="form-control" id="RequestDetails" @bind-Value="newRequest.Content" rows="10" required></InputTextArea>
             </div>
         </div>
         <div class="row my-4">
@@ -93,14 +93,21 @@
 
 @code {
 
-    
-
-    private DateTime CurrentDate = DateTime.Today;
-    private DateTime ExpectedDate = DateTime.Today.AddDays(7);
+    DateTime CurrentDate = DateTime.Now;
+    DateTime ExpectedDate = DateTime.Now.AddDays(7);
 
     private DateTime SetExpectedDate(DateTime date)
     {
         return ExpectedDate = date;
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        newRequest!.CreatedAt = DateTime.Now;
+        newRequest.AssigneeId = 11;
+        newRequest.StatusId = 6;
     }
 
     [SupplyParameterFromForm(FormName = "SubmitNewRequestForm")]
@@ -116,12 +123,19 @@
         System.Diagnostics.Debug.WriteLine("Internal Audit Number:\t" + newRequest.InternalAuditNumber);
         System.Diagnostics.Debug.WriteLine("Request Details:\t" + newRequest.Content);
         System.Diagnostics.Debug.WriteLine("Is Priority:\t" + newRequest.IsPriority);
-        System.Diagnostics.Debug.WriteLine("Assignee:\t" + newRequest.Assignee);
+        System.Diagnostics.Debug.WriteLine("Assignee:\t" + newRequest.AssigneeId);
         System.Diagnostics.Debug.WriteLine("Status:\t" + newRequest.StatusId);
 
-        //        dbContext.Request.Add(newequest);
-        //        dbContext.SaveChanges();
+        System.Diagnostics.Debug.WriteLine(newRequest.ToString());
 
-       
+        if (newRequest.RequestorName.Equals("") && newRequest.RequestorEmail.Equals("") && newRequest.WorkRequestNumber.Equals("") && newRequest.Content.Equals(""))
+        {
+            System.Diagnostics.Debug.WriteLine("Please fill in all required fields");
+        }
+        else
+        {
+            dbContext.Request.Add(newRequest);
+            dbContext.SaveChanges();
+        }
     }
 }
