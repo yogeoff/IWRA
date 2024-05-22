@@ -2,101 +2,105 @@
 @using IWRA_Web.Models
 @using IWRA_Web.Data
 @using IWRA_Web.Components.Partials.Page
+@using IWRA_Web.Components.Partials.Form
 
 @inject AppDbContext dbContext
 
 <PageHeading Title="Requests" />
 
 <div class="row">
-    <div class="card col">
-        <div class="card-header">
-            <p class="card-title">Assigned</p>
+    @foreach (Status s in dbContext.Status)
+    {
+        <div class="card col">
+            <div class="card-header">
+            <p class="card-title">@s.Name</p>
         </div>
         <div class="card-body">
-            @dbContext.Request.Where(c => c.StatusId == @dbContext.Status.Where(s => s.Name == "Assigned").FirstOrDefault()!.Id).Count()
-            
+            @NumberOfRequestsByStatus(s.Name)            
         </div>
-    </div>
+        </div>
+    }
+</div>
 
-    <div class="card col">
-        <div class="card-header">
-            <p class="card-title">Cancelled</p>
-        </div>
-        <div class="card-body">
-            @dbContext.Request.Where(c => c.StatusId == @dbContext.Status.Where(s => s.Name == "Cancelled").FirstOrDefault()!.Id).Count()
+<div class="row">
+    <div class="col">
+        <table class="table table-bordered my-4">
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Date</th>
+                <th>Work Request Number</th>
+                <th>Requestor</th>
+                <th>Department Id</th>
+                <th>Status Id</th>
+                <th>Assignee</th>
+            </tr>
 
-        </div>
-    </div>
-
-    <div class="card col">
-        <div class="card-header">
-            <p class="card-title">Completed</p>
-        </div>
-        <div class="card-body">
-            @dbContext.Request.Where(c => c.StatusId == @dbContext.Status.Where(s => s.Name == "Completed").FirstOrDefault()!.Id).Count()
-
-        </div>
-    </div>
-
-    <div class="card col">
-        <div class="card-header">
-            <p class="card-title">In Process</p>
-        </div>
-        <div class="card-body">
-            @dbContext.Request.Where(c => c.StatusId == @dbContext.Status.Where(s => s.Name == "In Process").FirstOrDefault()!.Id).Count()
-
-        </div>
-    </div>
-
-    <div class="card col">
-        <div class="card-header">
-            <p class="card-title">On Hold</p>
-        </div>
-        <div class="card-body">
-            @dbContext.Request.Where(c => c.StatusId == @dbContext.Status.Where(s => s.Name == "On Hold").FirstOrDefault()!.Id).Count()
-
-        </div>
-    </div>
-
-    <div class="card col">
-        <div class="card-header">
-            <p class="card-title">Submitted</p>
-        </div>
-        <div class="card-body">
-            @dbContext.Request.Where(c => c.StatusId == @dbContext.Status.Where(s => s.Name == "Submitted").FirstOrDefault()!.Id).Count()
-
-        </div>
+            @foreach (Request r in dbContext.Request.OrderByDescending(r => r.CreatedAt))
+            {
+                @if ((r.StatusId != dbContext.Status.Where(s => s.Name == "Completed").FirstOrDefault()?.Id) && (r.StatusId != dbContext.Status.Where(s => s.Name == "Cancelled").FirstOrDefault()?.Id))
+                {
+                    <tr>
+                        <td>
+                            <div>
+                                @if (r.IsPriority)
+                                {
+                                    <span class="bg-warning p-1 fw-bold rounded-3 small">P</span>
+                                }
+                                
+                                @if (r.InternalAuditNumber != "")
+                                {
+                                    <span class="bg-info p-1 fw-bold rounded-3 small">IA</span>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <a href="UpdateRequest/@r.Id">
+                                Edit
+                            </a>
+                        </td>
+                        <td>@r.CreatedAt.ToString("dd MMMM yyyy")</td>
+                        <td>@r.WorkRequestNumber</td>
+                        <td>@r.RequestorName</td>
+                        <td>@dbContext.Department.Find(r.DepartmentId)?.Name</td>
+                        <td>@dbContext.Status.Find(r.StatusId)?.Name</td>
+                        <td>@dbContext.Assignee.Find(r.AssigneeId)?.Name</td>
+                    </tr>
+                }
+            }
+        </table>
     </div>
 </div>
 
-<table class="table table-bordered my-4">
-    <tr>
-        <th>Date</th>
-        <th>Work Request Number</th>
-        <th>Requestor</th>
-        <th>Department Id</th>
-        <th>Status Id</th>
-        <th>Assignee</th>
-    </tr>
-
-    @foreach (Request r in dbContext.Request.OrderByDescending(r => r.CreatedAt))
+@code {
+    private int NumberOfRequestsByStatus(string status)
     {
-        @if ((r.StatusId != dbContext.Status.Where(s => s.Name == "Completed").FirstOrDefault()?.Id) && (r.StatusId != dbContext.Status.Where(s => s.Name == "Cancelled").FirstOrDefault()?.Id))
+        return @dbContext.Request.Where(c => c.StatusId == @dbContext.Status.Where(s => s.Name == status).FirstOrDefault()!.Id).Count();
+    }
+
+    public Note? editNote { get; set; } = new Note();
+
+    private bool Hide { get; set; } = false;
+    private void EditRequestToggle()
+    {
+        Hide = !Hide;
+    }
+
+    [SupplyParameterFromForm(FormName = "SubmitEditRequestForm")]
+    public Request? editRequest { get; set; } = new Request();
+
+    public void UpdateRequestForm()
+    {
+        if (editRequest != null)
         {
-            <tr>
-                <td>@r.CreatedAt.ToString("dd MMMM yyyy")</td>
-                <td>@r.WorkRequestNumber</td>
-                <td>@r.RequestorName</td>
-                <td>@dbContext.Department.Find(r.DepartmentId)?.Name</td>
-                <td>@dbContext.Status.Find(r.StatusId)?.Name</td>
-                <td>@dbContext.Assignee.Find(r.AssigneeId)?.Name</td>
-            </tr>
+            System.Diagnostics.Debug.WriteLine("Request Id:\t" + editRequest.Id);
+            System.Diagnostics.Debug.WriteLine("Assignee:\t" + editRequest.AssigneeId);
+            System.Diagnostics.Debug.WriteLine("Status:\t" + editRequest.StatusId);
+
+            dbContext.Request.Update(editRequest);
+            dbContext.SaveChanges();
         }
     }
-</table>
-
-@code {
-
 }
 
 <style>

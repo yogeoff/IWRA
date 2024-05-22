@@ -1,0 +1,206 @@
+﻿@page "/UpdateRequest/{RequestId:int}"
+@using IWRA_Web.Models
+@using IWRA_Web.Data
+@using IWRA_Web.Components.Partials.Page
+@using IWRA_Web.Components.Partials.Form
+@using Microsoft.EntityFrameworkCore
+
+@inject AppDbContext updateDbContext
+
+<PageHeading Title="Update Request" />
+
+<div class="row">
+    <div class="col-8">
+        @foreach (Request r in updateDbContext.Request)
+        {
+            @if (r.Id == @RequestId)
+            {
+                <EditForm Model="@updateRequest" FormName="UpdateRequestForm" OnSubmit="UpdateRequestForm">
+                    <div class="border px-4">
+                        <div class="row my-4">
+                            <p>
+                                @if (r.IsPriority)
+                                {
+                                
+                                    <span class="bg-warning p-2 fw-bold rounded-3">Priority request</span>
+                                }
+                                @if (r.InternalAuditNumber != null)
+                                {
+                                    <span class="bg-info p-2 fw-bold rounded-3">Internal Audit</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="row my-4">
+                            <div class="form-group col">
+                                <label for="RequestDate">Request Date</label>
+                                <div class="form-control border-0 font-monospace" id="RequestDate">
+                                    @r.CreatedAt.ToString("dd MMMM yyyy")
+                                </div>
+                            </div>
+
+                            <div class="form-group col">
+                                <label for="Department">Department</label>
+                                <div class="form-control border-0 font-monospace" id="Department">
+                                    @updateDbContext.Department.Find(r.DepartmentId)?.Name
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row my-4">
+                            <div class="form-group col">
+                                <label for="RequestorName">Requestor Name</label>
+                                <div class="form-control border-0 font-monospace" id="RequestorName">
+                                    @r.RequestorName
+                                </div>
+                            </div>
+
+                            <div class="form-group col">
+                                <label for="RequestorEmail">Requestor Email</label>
+                                <div class="form-control border-0 font-monospace" id="RequestorEmail">
+                                    @r.RequestorEmail
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row my-4">
+                            <div class="form-group col">
+                                <label for="WorkRequestNumber">Work Request Number</label>
+                                <div class="input-group">
+                                    <div class="form-control border-0 font-monospace" id="WorkRequestNumber">
+                                        @r.WorkRequestNumber
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col">
+                                <label for="InternalAuditNumber">Internal Audit Number</label>
+                                <div class="input-group">
+                                    <div class="form-control border-0 font-monospace" id="InternalAuditNumber">
+                                        @r.InternalAuditNumber
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row my-4">
+                            <div class="form-group col">
+                                <label for="RequestDetails">Request Details</label>
+                                <div class="form-control border-0 font-monospace" id="RequestDetails">
+                                    @r.Content
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border px-4">
+                        <div class="row my-4">
+                            <div class="form-group col">
+                                <label for="Assignee">Assignee</label>
+                                <InputSelect class="form-select" @bind-Value="updateRequest!.AssigneeId">
+                                    @foreach (Assignee a in updateDbContext.Assignee)
+                                    {
+                                        if (a.Id == r.AssigneeId)
+                                        {
+                                            <option value="@a.Id" selected>@a.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@a.Id">@a.Name</option>
+                                        }
+
+                                    }
+                                </InputSelect>
+                            </div>
+
+                            <div class="form-group col">
+                                <label for="Status">Status</label>
+                                <InputSelect class="form-select" @bind-Value="updateRequest.StatusId">
+                                    @foreach (Status s in updateDbContext.Status)
+                                    {
+                                        if (s.Id == r.StatusId)
+                                        {
+                                            <option value="@s.Id" selected>@s.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@s.Id">@s.Name</option>
+                                        }
+                                    }
+                                </InputSelect>
+                            </div>
+
+                            <div class="row my-4">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </div>
+                            </div>
+
+    @*                         <div class="row my-4">
+                                <div class="col-auto">
+                                    <h5 class="fw-bold my-1">Notes</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-outline-primary">Add Note</button>
+                                </div>
+                            </div> *@
+
+                            @if (@updateDbContext.Note.Find(r.Id) != null)
+                            {
+                                <div class="card">
+                                    <div class="card-header">
+                                        @updateDbContext.Assignee.Find(@updateDbContext.Note.Find(r.Id)?.AssigneeId)?.Name · <span class="text-secondary">@updateDbContext.Note.Find(r.Id)?.CreatedAt.ToString("dd MMMM yyyy hh:mm")</span>
+                                    </div>
+                                    <div class="card-body">
+                                        @updateDbContext.Note.Find(r.Id)?.Content
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div>There are no notes for this request.</div>
+                            }
+                        </div>
+                    </div>
+                </EditForm>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int RequestId { get; set; }
+
+    public Note? editNote { get; set; } = new Note();
+
+    [SupplyParameterFromForm(FormName = "UpdateRequestForm")]
+    public Request? updateRequest { get; set; } = new Request();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        updateRequest = updateDbContext.Request.Find(RequestId);
+
+        updateRequest!.Id = RequestId;
+    }
+
+    public void UpdateRequestForm()
+    {
+
+        if (updateRequest != null)
+        {
+            System.Diagnostics.Debug.WriteLine("Request Id:\t" + updateRequest.Id);
+            System.Diagnostics.Debug.WriteLine("Assignee Id:\t" + updateRequest.AssigneeId);
+            System.Diagnostics.Debug.WriteLine("Status Id:\t" + updateRequest.StatusId);
+
+            // updateDbContext.Entry(updateRequest).State = EntityState.Detached;
+
+            //updateDbContext.Update(updateRequest);
+            //updateDbContext.SaveChanges();
+        }
+    }
+}
+
+<style>
+
+</style>
