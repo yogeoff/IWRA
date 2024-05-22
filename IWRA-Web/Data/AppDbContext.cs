@@ -3,14 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IWRA_Web.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext(IConfiguration configuration) : DbContext
     {
-        protected readonly IConfiguration Configuration;
-
-        public  AppDbContext(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        protected readonly IConfiguration Configuration = configuration;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

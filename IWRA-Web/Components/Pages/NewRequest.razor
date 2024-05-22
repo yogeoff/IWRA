@@ -15,7 +15,7 @@
             <div class="form-group col">
                 <label for="RequestDate">Request Date</label>
                 <small class="d-block form-text text-muted">Requests are automatically submitted with the current date</small>
-                <InputDate Type="InputDateType.Date" class="form-control" id="RequestDate" @Value:get="@CurrentDate" @bind-Value="newRequest.CreatedAt" readonly />
+                <InputDate Type="InputDateType.Date" class="form-control" id="RequestDate" @Value:get="@CurrentDate" @bind-Value="newRequest!.CreatedAt" readonly />
             </div>
 
             <div class="form-group col">
@@ -115,7 +115,7 @@
 
     public void SubmitNewRequestForm()
     {
-        System.Diagnostics.Debug.WriteLine("Request Date:\t" + newRequest.CreatedAt);
+        System.Diagnostics.Debug.WriteLine("Request Date:\t" + newRequest!.CreatedAt);
         System.Diagnostics.Debug.WriteLine("Department:\t" + newRequest.DepartmentId);
         System.Diagnostics.Debug.WriteLine("Requestor Name:\t" + newRequest.RequestorName);
         System.Diagnostics.Debug.WriteLine("Requestor Email:\t" + newRequest.RequestorEmail);
